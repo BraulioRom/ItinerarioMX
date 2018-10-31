@@ -73,4 +73,11 @@ function deleteQueryBatch(db, query, batchSize, resolve, reject) {
       })
       .catch(reject);
 }
-module.exports={getReference , personalTop, globalTop, deleteCollection};
+
+async function getDocuments(coll) {
+  return db.collection(coll).get();
+}
+async function deleteDocument(ref) {
+  return db.doc(ref).delete();
+}
+module.exports={getReference , personalTop, globalTop, deleteCollection,getDocuments,deleteDocument};

@@ -1,5 +1,7 @@
 //modulos 
+const tiempo = require('../components/tiempo');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectID;
 
 //configuraciones
 require('../config/config');
@@ -150,7 +152,85 @@ async function historial(usuario,lugares) {
     }
 }
 
-client.close();
+async function getPlace(categoria,hora,dia,salida) {
+    try {
+        let query={}
+        query['categoria']= categoria
+        query['plan']= salida
+        await client.connect();
+        const db = client.db(MONGO_DB);
+        let docs = await db.collection('lugares').find(query).project({
+            '_id': 1,
+            'name': 1,
+            'img':1,
+            'location':1,
+            'schedule':1
+        }).toArray();
+        if (docs.length < 4){
+            query={}
+            query['categoria']= categoria
+            docs = await db.collection('lugares').find(query).project({
+                '_id': 1,
+                'name': 1,
+                'img':1,
+                'location':1,
+                'schedule':1
+            }).toArray();
+        }
+        let posibles = await checadia(docs,hora,dia);
+        let r = Math.floor(Math.random() * Math.floor(posibles.length));
+        return posibles[r];
+    } catch (error) {
+        throw 'MongogetPlace';
+    }
+}
+
+async function checadia(documents,hora,dia) {
+    let salida=[]
+    for (var doc of documents) {
+        if ('schedule' in doc){
+            if (dia in doc.schedule){
+                let vector=doc.schedule[dia].split(' ');
+                let min = vector[0].split(':')
+                let max = vector[2].split(':')
+                let tmin = await tiempo.getTiempo(parseInt(min[0]),parseInt(min[1]))
+                let tmax = await tiempo.getTiempo(parseInt(max[0]),parseInt(max[1]))
+                if((tmin<hora) && (hora<tmax)){
+                    salida.push(doc)
+                }
+            }
+        }
+    }
+    return salida
+}
+
+async function getLugar(id) {
+    try {        
+        let ids = new ObjectID()
+        var query = {"_id": new ObjectID(id)}
+        console.log(query);
+        
+        var projection = {
+            "img": 1.0,
+            "location": 1.0,
+            "name": 1.0,
+            "description": 1.0,
+            "schedule": 1.0,
+            "_id": 0.0
+        };
+        await client.connect();        
+        const db = client.db(MONGO_DB);
+        var cursor = await db.collection('lugares').find(query).project(projection).toArray();         
+        return cursor
+        
+    } catch (error) {
+        console.log(error);
+        
+        if (error == 'MongoLugarError') throw 'MongoLugarError';
+        throw 'MongoTopten';
+    }
+}
+
 module.exports = {
     exist,  //hay registro de un usuario
     create, //crea registro de un usuario
@@ -159,5 +239,7 @@ module.exports = {
     recovery, //busca el usuario y recupera contraseña
     check,  //checa si existe el usaior y devuelve label y vector
     update, //actualiza un usuario
-    historial //hace el registro de lugares para un usuario
+    historial, //hace el registro de lugares para un usuario
+    getPlace, //para el itineraroi
+    getLugar //para actualizar topten
 };

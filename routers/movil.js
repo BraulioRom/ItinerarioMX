@@ -13,5 +13,6 @@ Router.post('/login',require('../middlewares/signup'));
 Router.post('/history', require('../middlewares/history'));
 Router.post('/settings', require('../middlewares/settings'));
 Router.post('/recovery', require('../middlewares/recovery'));
+Router.post('/itinerario', require('../middlewares/itinerario'));
 
 module.exports = Router;
