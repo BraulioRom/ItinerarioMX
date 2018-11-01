@@ -317,12 +317,12 @@ async function stats() {
             },
             "usuarios":{
                 "usuarios":nusuarios,
-                "usc1": await suma(usc1,0),
-                "usc2": await suma(usc2,0),
-                "usc3": await suma(usc3,0),
-                "usc4": await suma(usc4,0),
-                "usc5": await suma(usc5,0),
-                "usc6": await suma(usc6,0),
+                "usc1": usc1,
+                "usc2": usc2,
+                "usc3": usc3,
+                "usc4": usc4,
+                "usc5": usc5,
+                "usc6": usc6,
                 "usco": usco,
                 "usfb": usfb,
                 "usgo": usgo
