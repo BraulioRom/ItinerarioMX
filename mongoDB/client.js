@@ -218,7 +218,12 @@ async function checadia(documents,hora,dia) {
             }
         }
     }
-    return salida
+    let nsalida=[];
+    for (const i of salida) {
+        i['id']=i._id
+        nsalida.push(i)
+    }
+    return nsalida
 }
 
 async function getLugar(id) {
