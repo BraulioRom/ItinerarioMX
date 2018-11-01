@@ -28,8 +28,11 @@ async function prueba (req, res){
         duracion: 100
     }
     //estandarizo tiempos
+    let algo =horaFin.hora<horaInicio.hora?horaFin.hora+24:horaFin.hora;
+    console.log(algo);
+    
     var disp = [await tiempo.getTiempo(horaInicio.hora,horaInicio.minuto),
-        await tiempo.getTiempo(horaFin.hora<horaInicio? horaFin+24:horaFin,horaFin.minuto)];
+        await tiempo.getTiempo(algo,horaFin.minuto)];
 
     let desa= [await tiempo.getTiempo(breakfast.hora),
         await tiempo.getTiempo(breakfast.hora,breakfast.minuto),
