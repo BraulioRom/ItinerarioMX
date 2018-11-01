@@ -17,7 +17,7 @@ const server = express();
 const movilRouter = require('./routers/movil');
 
 //global middlewares
-app.use(helmet())
+server.use(helmet())
 server.use(morgan('common'));
 
 server.use(function(req, res, next) {
