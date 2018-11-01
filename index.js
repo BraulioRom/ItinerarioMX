@@ -1,8 +1,9 @@
 //modulos
-const express = require('express');
+var helmet = require('helmet')
 const morgan = require('morgan');
+const express = require('express');
+const fire = require('./firebase/firebase');
 const topten = require('./components/toptens');
-const fire = require('./firebase/firebase')
 const statistics = require('./components/statistics');
 
 
@@ -16,6 +17,7 @@ const server = express();
 const movilRouter = require('./routers/movil');
 
 //global middlewares
+app.use(helmet())
 server.use(morgan('common'));
 
 server.use(function(req, res, next) {
