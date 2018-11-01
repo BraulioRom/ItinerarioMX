@@ -230,6 +230,102 @@ async function getLugar(id) {
         throw 'MongoTopten';
     }
 }
+async function stats() {
+    try {
+        await client.connect();
+        const db = client.db(MONGO_DB);
+        let nlugares = await db.collection('lugares').find().count();
+        let c1 = await db.collection('lugares').find({cluster:'0'}).count();
+        let c2 = await db.collection('lugares').find({cluster:'1'}).count();
+        let c3 = await db.collection('lugares').find({cluster:'2'}).count();
+        let c4 = await db.collection('lugares').find({cluster:'3'}).count();
+        let c5 = await db.collection('lugares').find({cluster:'4'}).count();
+        let c6 = await db.collection('lugares').find({cluster:'5'}).count();
+        let r = await db.collection('lugares').find().project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc1 = await db.collection('lugares').find({cluster:'0'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc2 = await db.collection('lugares').find({cluster:'1'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc3 = await db.collection('lugares').find({cluster:'2'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc4 = await db.collection('lugares').find({cluster:'3'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc5 = await db.collection('lugares').find({cluster:'4'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rc6 = await db.collection('lugares').find({cluster:'5'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rcaf = await db.collection('lugares').find({categoria:'cafe'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rres = await db.collection('lugares').find({categoria:'restaurante'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let rbar = await db.collection('lugares').find({categoria:'bar'}).project({'_id':0.0,'ranking':1.0}).toArray();
+        let caf = await db.collection('lugares').find({categoria:'cafe'}).count();
+        let res = await db.collection('lugares').find({categoria:'restaurante'}).count();
+        let bar = await db.collection('lugares').find({categoria:'bar'}).count();
+        let usc1 = await db.collection('users').find({label:'0'}).count();
+        let usc2 = await db.collection('users').find({label:'1'}).count();
+        let usc3 = await db.collection('users').find({label:'2'}).count();
+        let usc4 = await db.collection('users').find({label:'3'}).count();
+        let usc5 = await db.collection('users').find({label:'4'}).count();
+        let usc6 = await db.collection('users').find({label:'5'}).count();
+        let usco = await db.collection('users').find({provider:'Correo'}).count();
+        let usfb = await db.collection('users').find({provider:'Facebook'}).count();
+        let usgo = await db.collection('users').find({provider:'Google'}).count();
+
+        let nusuarios = await db.collection('users').find().count();
+        let nvisitas = await db.collection('history').find().count();
+        return {
+                "lugares":{
+                "lugares":nlugares,
+                "c1":c1,
+                "c2":c2,
+                "c3":c3,
+                "c4":c4,
+                "c5":c5,
+                "c6":c6,
+                "caf":caf,
+                "res":res,
+                "bar":bar,
+                "ra": await suma(r,1),
+                "rac1": await suma(rc1,1),
+                "rac2": await suma(rc2,1),
+                "rac3": await suma(rc3,1),
+                "rac4": await suma(rc4,1),
+                "rac5": await suma(rc5,1),
+                "rac6": await suma(rc6,1),
+                "rcaf": await suma(rcaf,1),
+                "rres": await suma(rres,1),
+                "rbar": await suma(rbar,1)
+            },
+            "usuarios":{
+                "usuarios":nusuarios,
+                "usc1": await suma(usc1,0),
+                "usc2": await suma(usc2,0),
+                "usc3": await suma(usc3,0),
+                "usc4": await suma(usc4,0),
+                "usc5": await suma(usc5,0),
+                "usc6": await suma(usc6,0),
+                "usco": await suma(usco,0),
+                "usfb": await suma(usfb,0),
+                "usgo": await suma(usgo,0)
+            },
+            "visitas":{
+                "visitas":[nvisitas, nlugares]
+            }
+        }
+    } catch (error) {
+        throw 'MongoStats';
+    }
+}
+async function suma(cursor,flag){
+    let suma=0;
+    let max=0;
+    let min=1;
+    if (cursor.length > 0){
+        for (const i of cursor) {
+            suma += i.ranking
+            if (flag == 1){
+                if (i.ranking > max) max=i.ranking
+                if (i.ranking < min) min=i.ranking
+            }
+        }
+        suma = suma/cursor.length
+    }
+    let salida = flag == 1 ? [suma, max, min] : suma;
+    return salida;
+}
 
 module.exports = {
     exist,  //hay registro de un usuario
@@ -241,5 +337,6 @@ module.exports = {
     update, //actualiza un usuario
     historial, //hace el registro de lugares para un usuario
     getPlace, //para el itineraroi
-    getLugar //para actualizar topten
+    getLugar, //para actualizar topten
+    stats
 };

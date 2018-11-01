@@ -1,7 +1,8 @@
+const statistics = require('../components/statistics');
+
 async function prueba (req, res){  
-    let variable = 'corero.com';
-    
-    res.status(200).json({correo:'hola'})
+    statistics.Update();
+    res.status(200).json()
 }
 
 module.exports = prueba;

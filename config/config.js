@@ -1,6 +1,6 @@
 //MONGO
 MONGO_URL = 'mongodb://localhost:27017';
-MONGO_DB = 'Itinerario';
+MONGO_DB = 'ItinerarioMX';
 
 //NODE
 NODE_PORT = 8080;

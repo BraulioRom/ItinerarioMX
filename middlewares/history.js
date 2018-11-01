@@ -1,6 +1,7 @@
 const mongo = require('../mongoDB/client')
 const fire = require('../firebase/firebase')
 const RecSys = require('../ML/recomendador')
+const statistics = require('../components/statistics');
 
 async function prueba (req, res){  
     try {
@@ -60,6 +61,8 @@ async function prueba (req, res){
                 let algo= await fire.deleteDocument(docs.docs[r].ref.path)
             } 
         }
+        //estadisitcas
+        statistics.Update();
         res.status(200).json({ok:true , msg:'History ok'})
     } catch (error) {
         switch (error) {

@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const topten = require('./components/toptens');
 const fire = require('./firebase/firebase')
+const statistics = require('./components/statistics');
 
 
 //configuraciones
@@ -39,6 +40,7 @@ server.listen(NODE_PORT, (suc,err) =>{
 /*
 try {
     fire.deleteCollection('topten',10).then(()=>topten.global());
+    statistics.Update();
 } catch (error) {
     console.log(error);       
 } */

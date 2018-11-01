@@ -80,4 +80,10 @@ async function getDocuments(coll) {
 async function deleteDocument(ref) {
   return db.doc(ref).delete();
 }
-module.exports={getReference , personalTop, globalTop, deleteCollection,getDocuments,deleteDocument};
+
+async function updateStats(data) {
+  db.collection('stats').doc('lugares').update(data.lugares)
+  db.collection('stats').doc('usuarios').update(data.usuarios)
+  db.collection('stats').doc('historial').update(data.visitas)
+}
+module.exports={getReference , personalTop, globalTop, deleteCollection,getDocuments,deleteDocument,updateStats};
