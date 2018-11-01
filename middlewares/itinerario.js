@@ -29,7 +29,7 @@ async function prueba (req, res){
     }
     //estandarizo tiempos
     var disp = [await tiempo.getTiempo(horaInicio.hora,horaInicio.minuto),
-        await tiempo.getTiempo(horaFin.hora,horaFin.minuto)];
+        await tiempo.getTiempo(horaFin.hora<horaInicio? horaFin+24:horaFin,horaFin.minuto)];
 
     let desa= [await tiempo.getTiempo(breakfast.hora),
         await tiempo.getTiempo(breakfast.hora,breakfast.minuto),

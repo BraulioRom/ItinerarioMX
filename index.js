@@ -1,5 +1,5 @@
 //modulos
-var helmet = require('helmet')
+var helmet = require('helmet');
 const morgan = require('morgan');
 const express = require('express');
 const fire = require('./firebase/firebase');
