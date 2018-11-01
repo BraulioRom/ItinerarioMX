@@ -15,7 +15,9 @@ const client = new MongoClient(MONGO_URL, {
 
 async function exist(id) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let flag = await db.collection('users').find({
             'email': id
@@ -28,7 +30,9 @@ async function exist(id) {
 
 async function create(obj) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        } 
         const db = client.db(MONGO_DB);
         let r = await db.collection('users').insertOne(obj);
     } catch (error) {
@@ -39,7 +43,9 @@ async function create(obj) {
 async function search(id, psw) {
     try {
         pssw = typeof psw == 'undefined' ? ':)' : psw;
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let docs = await db.collection('users').find({
             'email': id,
@@ -69,8 +75,9 @@ async function topten(clus=100) {
         };
         var sort = [ ["ranking", -1] ];
         var limit = 10;
-
-        await client.connect();        
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
         const db = client.db(MONGO_DB);
         var cursor = await db.collection('lugares').find(query).project(projection).sort(sort).limit(limit).toArray();    
         if (cursor.length == 0) throw 'MongotopError';
@@ -84,7 +91,9 @@ async function topten(clus=100) {
 
 async function recovery(email) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         var query = {"email": email, "provider":"0"};
         var projection = {
@@ -103,7 +112,9 @@ async function recovery(email) {
 
 async function check(id) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let docs = await db.collection('users').find({
             'email': id
@@ -123,7 +134,9 @@ async function check(id) {
 
 async function update(id,data) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let r = await db.collection('users').updateOne({email:id},{ $set: data});        
         if (r.matchedCount != 1) throw 'UserUnknown';
@@ -135,7 +148,9 @@ async function update(id,data) {
 
 async function historial(usuario,lugares) {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let r = await db.collection('history').updateOne(
             {lugar:lugares},
@@ -157,7 +172,9 @@ async function getPlace(categoria,hora,dia,salida) {
         let query={}
         query['categoria']= categoria
         query['plan']= salida
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let docs = await db.collection('lugares').find(query).project({
             '_id': 1,
@@ -218,7 +235,9 @@ async function getLugar(id) {
             "schedule": 1.0,
             "_id": 0.0
         };
-        await client.connect();        
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
         const db = client.db(MONGO_DB);
         var cursor = await db.collection('lugares').find(query).project(projection).toArray();         
         return cursor
@@ -232,7 +251,9 @@ async function getLugar(id) {
 }
 async function stats() {
     try {
-        await client.connect();
+        if(!client.isConnected()){
+            await client.connect();
+        }
         const db = client.db(MONGO_DB);
         let nlugares = await db.collection('lugares').find().count();
         let c1 = await db.collection('lugares').find({cluster:'0'}).count();
@@ -297,9 +318,9 @@ async function stats() {
                 "usc4": await suma(usc4,0),
                 "usc5": await suma(usc5,0),
                 "usc6": await suma(usc6,0),
-                "usco": await suma(usco,0),
-                "usfb": await suma(usfb,0),
-                "usgo": await suma(usgo,0)
+                "usco": usco,
+                "usfb": usfb,
+                "usgo": usgo
             },
             "visitas":{
                 "visitas":[nvisitas, nlugares]

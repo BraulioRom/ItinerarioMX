@@ -16,7 +16,7 @@ const server = express();
 const movilRouter = require('./routers/movil');
 
 //global middlewares
-server.use(morgan('dev'));
+server.use(morgan('common'));
 
 server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
