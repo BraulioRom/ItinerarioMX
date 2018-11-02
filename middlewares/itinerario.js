@@ -96,7 +96,9 @@ async function prueba (req, res){
         ) //tengo tiempo disponible?
         {
         propuesta.push(await mongo.getPlace('bar',disp[0],dia,salida))
-        disp[0]+=100
+        disp[0]+=60
+        propuesta.push(await mongo.getPlace('bar',disp[0],dia,salida))
+        disp[0]+=60
         propuesta.push(await mongo.getPlace('bar',disp[0],dia,salida))
     }
     res.status(200).json(propuesta)
