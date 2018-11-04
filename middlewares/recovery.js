@@ -17,7 +17,7 @@ async function prueba (req, res){
     
         let mailOptions = {
             from: '"ItinerarioMX"',
-            to: 'braulio_roeme@hotmail.com', //  Email req.body.email
+            to: req.body.email,
             subject: 'Recovery', 
             html: `<h1><b>Itinerario MX. Support team:</b></h1><br><br> Your password is: ${psw[0].psw}`
         };
