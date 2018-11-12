@@ -84,7 +84,8 @@ async function topten(clus=100) {
         let salida=[]
         for (let index = 0; index < 10; index++) {
             let r = Math.floor(Math.random() * Math.floor(cursor.length));
-            salida.push(cursor.splice(r,1));
+            let algo = cursor.splice(r,1);          
+            salida.push(algo[0])
         }
         return salida
         
