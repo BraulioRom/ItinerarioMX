@@ -79,9 +79,14 @@ async function topten(clus=100) {
             await client.connect(); 
         }       
         const db = client.db(MONGO_DB);
-        var cursor = await db.collection('lugares').find(query).project(projection).sort(sort).limit(limit).toArray();    
+        var cursor = await db.collection('lugares').find(query).project(projection).sort(sort).toArray();    
         if (cursor.length == 0) throw 'MongotopError';
-        return cursor
+        let salida=[]
+        for (let index = 0; index < 10; index++) {
+            let r = Math.floor(Math.random() * Math.floor(cursor.length));
+            salida.push(cursor.splice(r,1));
+        }
+        return salida
         
     } catch (error) {
         if (error == 'MongotopError') throw 'MongotopError';
@@ -230,8 +235,6 @@ async function getLugar(id) {
     try {        
         let ids = new ObjectID()
         var query = {"_id": new ObjectID(id)}
-        console.log(query);
-        
         var projection = {
             "img": 1.0,
             "location": 1.0,
