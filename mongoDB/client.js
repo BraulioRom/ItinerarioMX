@@ -100,7 +100,7 @@ async function recovery(email) {
             await client.connect();
         }
         const db = client.db(MONGO_DB);
-        var query = {"email": email, "provider":"0"};
+        var query = {"email": email};
         var projection = {
             "psw": 1.0,
             "_id": 0.0
