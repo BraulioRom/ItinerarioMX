@@ -4,7 +4,7 @@ const mongo = require('../mongoDB/client')
 
 async function prueba (req, res){ 
     try {
-        let psw = await mongo.recovery(req.body.email);        
+        let psw = await mongo.recovery(req.body.correo);        
         let transporter = nodeMailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
@@ -17,7 +17,7 @@ async function prueba (req, res){
     
         let mailOptions = {
             from: '"ItinerarioMX"',
-            to: req.body.email,
+            to: req.body.correo,
             subject: 'Recovery', 
             html: `<h1><b>Itinerario MX. Support team:</b></h1><br><br> Your password is: ${psw[0].psw}`
         };

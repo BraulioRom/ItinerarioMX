@@ -2,15 +2,15 @@ const mongo = require('../mongoDB/client');
 
 async function prueba (req, res){  
     try {
-        let data = await mongo.getLugares();
+        let data = await mongo.getAdmins();
         res.status(200).json({ok:true , data});
     } catch (error) {
         switch (error) {
-            case 'MongoGetLugares':
-                res.status(202).json({ok:false , msg: 'MongoGetLugares'});
+            case 'MongoGetAdmins':
+                res.status(200).json({ok:false , msg: 'MongoGetAdmins'});
                 break;
             default:
-                res.status(503).json({ok:false , msg: 'Server unavailable'});
+                res.status(200).json({ok:false , msg: 'Server unavailable'});
                 break;
         }
     }

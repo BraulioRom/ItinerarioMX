@@ -15,6 +15,7 @@ const server = express();
 
 //routers
 const movilRouter = require('./routers/movil');
+const adminRouter = require('./routers/admin');
 
 //global middlewares
 server.use(helmet())
@@ -31,6 +32,7 @@ server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 
 server.use('/movil',movilRouter);
+server.use('/admin',adminRouter);
 
 //Initialize 
 server.listen(NODE_PORT, (suc,err) =>{

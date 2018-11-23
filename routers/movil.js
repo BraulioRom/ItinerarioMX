@@ -16,8 +16,4 @@ Router.post('/settings', require('../middlewares/settings'));
 Router.post('/recovery', require('../middlewares/recovery'));
 Router.post('/itinerario', require('../middlewares/itinerario'));
 
-Router.route('/lugares')
-.get(require('../middlewares/getLugares'))
-.post(require('../middlewares/updateLugares'));
-
 module.exports = Router;

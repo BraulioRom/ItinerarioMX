@@ -236,7 +236,6 @@ async function checadia(documents,hora,dia) {
 
 async function getLugar(id) {
     try {        
-        let ids = new ObjectID()
         var query = {"_id": new ObjectID(id)}
         var projection = {
             "img": 1.0,
@@ -254,8 +253,6 @@ async function getLugar(id) {
         return cursor
         
     } catch (error) {
-        console.log(error);
-        
         if (error == 'MongoLugarError') throw 'MongoLugarError';
         throw 'MongoTopten';
     }
@@ -359,6 +356,102 @@ async function suma(cursor,flag){
     return salida;
 }
 
+async function getLugares(){
+    try {        
+        var projection = {
+            "_id": 1.0,
+            "name": 1.0,
+            "cluster": 1.0
+        };
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
+        const db = client.db(MONGO_DB);
+        var cursor = await db.collection('lugares').find({}).project(projection).toArray();         
+        return cursor
+        
+    } catch (error) {
+        throw 'MongoGetLugares';
+    }
+}
+
+async function deleteLugares(ids){
+    try {        
+        let query={"_id": new ObjectID(ids)}
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
+        const db = client.db(MONGO_DB);
+        var resp = await db.collection('lugares').deleteOne(query);
+        if (resp.result.n != 1) throw 'No Match';      
+    } catch (error) {
+        throw 'MongoDeleteLugares';
+    }
+}
+async function getAdmins(){
+    try {        
+        var projection = {
+            "_id": 1.0,
+            "name": 1.0,
+        };
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
+        const db = client.db(MONGO_DB);
+        var cursor = await db.collection('admins').find({ "name": { $ne: "root" } }).project(projection).toArray();         
+        return cursor
+        
+    } catch (error) {
+        throw 'MongoGetAdmins';
+    }
+}
+async function crearAdmin(user){
+    try {
+        if(!client.isConnected()){
+            await client.connect();
+        } 
+        const db = client.db(MONGO_DB);
+        let flag = await db.collection('admins').find({
+            'name': user.name
+        }).count();
+
+        if (flag != 0) {
+            throw 'UserExist';
+        }else{
+            let r = await db.collection('admins').insertOne(user);
+        }
+    } catch (error) {
+        if (error == 'UserExist') throw 'UserExist';
+        throw 'MongoCrearAdmin';
+    }
+}
+async function deleteAdmin(ids){
+    try {        
+        let query={"_id": new ObjectID(ids)}
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
+        const db = client.db(MONGO_DB);
+        var resp = await db.collection('admins').deleteOne(query);
+        if (resp.result.n != 1) throw 'No Match';      
+    } catch (error) {
+        throw 'MongoDeleteLug';
+    }
+}
+async function entra(objeto){
+    try {        
+        let query={"name": objeto.name, "psw": objeto.psw}
+        if(!client.isConnected()){
+            await client.connect(); 
+        }       
+        const db = client.db(MONGO_DB);
+        var resp = await db.collection('admins').find(query).count();
+        if (resp != 1) throw 'DoesnExist';
+    } catch (error) {
+        throw 'MongoEntra';
+    }
+}
+
 module.exports = {
     exist,  //hay registro de un usuario
     create, //crea registro de un usuario
@@ -370,5 +463,11 @@ module.exports = {
     historial, //hace el registro de lugares para un usuario
     getPlace, //para el itineraroi
     getLugar, //para actualizar topten
-    stats
+    stats,
+    getLugares, //administrador obtener todos los lugares
+    deleteLugares, //administrador elemina lugares 
+    getAdmins,
+    crearAdmin,    //crea administradores 
+    deleteAdmin,    //elimina administradores
+    entra
 };
